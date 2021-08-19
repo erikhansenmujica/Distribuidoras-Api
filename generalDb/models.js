@@ -1,7 +1,11 @@
-const { DataTypes, Model, STRING } = require("sequelize");
+const { DataTypes, Model, STRING, BOOLEAN } = require("sequelize");
 const sequelize = require("./index");
 
-class Usuarios extends Model {}
+class Usuarios extends Model {
+  async validPassword(password) {
+    return password === this.password;
+  }
+}
 
 Usuarios.init(
   {
@@ -14,6 +18,11 @@ Usuarios.init(
       allowNull: false,
     },
     email: { type: DataTypes.STRING, allowNull: false },
+    habilitado: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+    },
   },
   {
     sequelize,
@@ -70,6 +79,10 @@ Distribuidoras.init(
       allowNull: false,
     },
     db_database: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    db_puerto: {
       type: DataTypes.STRING,
       allowNull: false,
     },
