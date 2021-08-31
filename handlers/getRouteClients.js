@@ -16,9 +16,12 @@ module.exports = async function (req, res) {
   connection.connect();
 
   connection.query(
-    "SELECT * FROM vista_clientes WHERE ruta = " + req.params.routeId,
+    "SELECT * FROM vista_clientes WHERE ruta = " +
+      req.params.routeId +
+      " ORDER BY lugar_en_ruta ASC",
     function (error, results, fields) {
       if (error) {
+        console.log(error);
         res.send({ error: "Error en el servidor." });
         return;
       }
