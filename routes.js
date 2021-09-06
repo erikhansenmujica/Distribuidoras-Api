@@ -8,6 +8,8 @@ const {companyRoutes, companyClients, companyAccountMovements, companyProducts} 
 const getRouteClients = require('./handlers/getRouteClients')
 const getDevice = require('./handlers/getDevice')
 const updateDevice = require('./handlers/updateDevice')
+const newCompanyClient = require('./handlers/newCompanyClient')
+const companyPriceList = require('./handlers/companyPriceList')
 
 
 module.exports = function (app, opts) {
@@ -24,4 +26,6 @@ module.exports = function (app, opts) {
   app.get("/user/device/:id", getDevice)
   app.post("/update/device/:id", updateDevice)
   app.post("/route/clients/:routeId", getRouteClients)
+  app.post("/company/newclient", newCompanyClient)
+  app.post("/company/pricelist", companyPriceList)
 }

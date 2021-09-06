@@ -3,7 +3,7 @@ const { Distribuidoras } = require("../generalDb/models");
 var mysql = require("mysql");
 
 module.exports = async function (req, res) {
-  const distribuidora = await Distribuidoras.findByPk(req.body.distribuidoraId);
+  const distribuidora = await Distribuidoras.findByPk(req.body.company);
   if (!distribuidora) {
     res.send({ error: "Error del servidor" });
     return;
@@ -19,9 +19,7 @@ module.exports = async function (req, res) {
   connection.connect();
 
   connection.query(
-    "SELECT * FROM vista_clientes WHERE ruta = " +
-      req.params.routeId +
-      " ORDER BY lugar_en_ruta ASC",
+    "SELECT distinct(lista_precio) FROM vista_clientes ORDER BY lista_precio",
     function (error, results, fields) {
       if (error) {
         console.log(error);

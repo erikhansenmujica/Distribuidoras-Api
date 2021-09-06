@@ -83,7 +83,7 @@ module.exports = function main(options, cb) {
   });
 
   // Start server
-  db.sync({ force: true }).then(() => {
+  db.sync({ force: false }).then(() => {
     const server = app.listen(opts.port, opts.host, function (err) {
       if (err) {
         return ready(err, app, server);
