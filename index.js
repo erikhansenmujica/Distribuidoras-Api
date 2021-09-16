@@ -5,7 +5,7 @@ const pino = require("pino");
 const pinoHttp = require("pino-http");
 var cors = require("cors");
 const db = require("./generalDb");
-var bodyParser = require('body-parser')
+var bodyParser = require("body-parser");
 
 module.exports = function main(options, cb) {
   // Set default options
@@ -37,9 +37,10 @@ module.exports = function main(options, cb) {
 
     // If server has started, close it down
     if (serverStarted) {
-      server.close(function () {
-        process.exit(1);
-      });
+      server &&
+        server.close(function () {
+          process.exit(1);
+        });
     }
   }
   process.on("uncaughtException", unhandledError);
@@ -52,10 +53,10 @@ module.exports = function main(options, cb) {
   // app.use(/* ... */)
   app.use(pinoHttp({ logger }));
   app.use(cors());
-  app.use(bodyParser.json())
-   
+  app.use(bodyParser.json());
+
   // create application/x-www-form-urlencoded parser
-  app.use(bodyParser.urlencoded({ extended: false }))
+  app.use(bodyParser.urlencoded({ extended: false }));
   // Register routes
   // @NOTE: require here because this ensures that even syntax errors
   // or other startup related errors are caught logged and debuggable.

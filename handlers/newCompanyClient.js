@@ -24,7 +24,7 @@ module.exports = async function (req, res) {
         res.send({ error: "Conexión a base de datos fallida." });
       } else {
         console.log(r);
-        let c = r[0].codigo ? r[0].codigo + 1 : 1;
+        let c = r[0] ? r[0].codigo + 1 : 1;
         connection.query(
           "INSERT INTO tbl_clientes_nuevos (tipo_cuenta, codigo,	nombre,	direccion,	localidad,	provincia,	codigo_postal,	telefono,	email,	datos_entrega,	numero_lista,	cuit,	categoria_de_iva,	ing_brutos,	cod_ruta,	pos_ruta) VALUES (" +
             "'" +

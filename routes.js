@@ -9,7 +9,10 @@ const getRouteClients = require('./handlers/getRouteClients')
 const getDevice = require('./handlers/getDevice')
 const updateDevice = require('./handlers/updateDevice')
 const newCompanyClient = require('./handlers/newCompanyClient')
+const newCompanyOrder = require('./handlers/newCompanyOrder')
 const companyPriceList = require('./handlers/companyPriceList')
+const getRouteOrders = require('./handlers/getRouteOrders')
+
 
 
 module.exports = function (app, opts) {
@@ -26,6 +29,8 @@ module.exports = function (app, opts) {
   app.get("/user/device/:id", getDevice)
   app.post("/update/device/:id", updateDevice)
   app.post("/route/clients/:routeId", getRouteClients)
+  app.get("/route/orders/:distribuidoraId/:routeId", getRouteOrders)
   app.post("/company/newclient", newCompanyClient)
+  app.post("/company/neworder", newCompanyOrder)
   app.post("/company/pricelist", companyPriceList)
 }
