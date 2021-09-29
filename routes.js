@@ -4,16 +4,18 @@ const configured = require('./handlers/configured')
 const register = require("./handlers/register")
 const login = require("./handlers/login")
 const getCompanies = require('./handlers/getCompanies')
-const {companyRoutes, companyClients, companyAccountMovements, companyProducts} = require('./handlers/getDbData')
+const {companyRoutes, companyClients, companyAccountMovements, companyProducts, companyOrders, companyOrdersContent} = require('./handlers/getDbData')
 const getRouteClients = require('./handlers/getRouteClients')
 const getDevice = require('./handlers/getDevice')
 const updateDevice = require('./handlers/updateDevice')
 const newCompanyClient = require('./handlers/newCompanyClient')
 const newCompanyOrder = require('./handlers/newCompanyOrder')
+const newCompanyPayment = require('./handlers/newPayment')
 const companyPriceList = require('./handlers/companyPriceList')
 const getRouteOrders = require('./handlers/getRouteOrders')
-
-
+const orderRouteChange = require('./handlers/orderRouteChange')
+const getClientHistorical = require('./handlers/getClientHistorical')
+const getAllCompanyClients = require('./handlers/getAllCompanyClients')
 
 module.exports = function (app, opts) {
   // Setup routes, middleware, and handlers
@@ -24,7 +26,10 @@ module.exports = function (app, opts) {
   app.get('/companies',getCompanies)
   app.get("/company/routes/:id", companyRoutes)
   app.get("/company/clients/:id", companyClients)
+  app.get("/company/allclients/:id", getAllCompanyClients)
   app.get("/company/accountmovements/:id", companyAccountMovements)
+  app.get("/company/orders/:id", companyOrders)
+  app.get("/company/orderscontent/:id", companyOrdersContent)
   app.get("/company/products/:id", companyProducts)
   app.get("/user/device/:id", getDevice)
   app.post("/update/device/:id", updateDevice)
@@ -32,5 +37,8 @@ module.exports = function (app, opts) {
   app.get("/route/orders/:distribuidoraId/:routeId", getRouteOrders)
   app.post("/company/newclient", newCompanyClient)
   app.post("/company/neworder", newCompanyOrder)
+  app.post("/company/newpayment", newCompanyPayment)
   app.post("/company/pricelist", companyPriceList)
+  app.post("/route/update/order/:distribuidoraId", orderRouteChange)
+  app.get("/client/historical/:distribuidoraId/:clientId", getClientHistorical)
 }
