@@ -86,8 +86,8 @@ module.exports = function main(options, cb) {
   // Start server
   db.sync({ force: false }).then(() => {
     const server = app.listen(
-      process.env.port || 8000,
-      opts.host,
+      process.env.PORT || 8000,
+      "0.0.0.0",
       function (err) {
         if (err) {
           return ready(err, app, server);
@@ -100,9 +100,7 @@ module.exports = function main(options, cb) {
 
         serverStarted = true;
         const addr = server.address();
-        logger.info(
-          `Started at ${opts.host || addr.host || "0.0.0.0"}:${addr.port}`
-        );
+        logger.info(`Started at ${"0.0.0.0"}:${process.env.PORT || 8000}`);
         ready(err, app, server);
       }
     );
