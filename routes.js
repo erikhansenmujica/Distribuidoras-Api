@@ -28,6 +28,8 @@ const orderRouteChange = require("./handlers/orderRouteChange");
 const getClientHistorical = require("./handlers/getClientHistorical");
 const getAllCompanyClients = require("./handlers/getAllCompanyClients");
 const syncDataClosingOrders = require("./handlers/syncDataClosingOrders");
+const syncData = require("./handlers/syncData");
+
 
 module.exports = function (app, opts) {
   // Setup routes, middleware, and handlers
@@ -58,4 +60,6 @@ module.exports = function (app, opts) {
   app.post("/route/update/order/:distribuidoraId", orderRouteChange);
   app.get("/client/historical/:distribuidoraId/:clientId", getClientHistorical);
   app.post("/sync/appdata/:distribuidoraId",syncDataClosingOrders)
+  app.get("/sync/table/:table/:distribuidoraId/:lastPk",syncData)
+
 };
