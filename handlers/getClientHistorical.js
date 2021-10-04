@@ -41,7 +41,6 @@ module.exports = async function (req, res) {
               return;
             }
             pedido.productos = r;
-            console.log(r)
             if (count === results.length - 1) {
               console.log(results[0])
               res.send(results);
