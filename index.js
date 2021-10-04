@@ -85,22 +85,26 @@ module.exports = function main(options, cb) {
 
   // Start server
   db.sync({ force: false }).then(() => {
-    const server = app.listen(opts.port, opts.host, function (err) {
-      if (err) {
-        return ready(err, app, server);
-      }
+    const server = app.listen(
+      process.env.port || 8000,
+      opts.host,
+      function (err) {
+        if (err) {
+          return ready(err, app, server);
+        }
 
-      // If some other error means we should close
-      if (serverClosing) {
-        return ready(new Error("Server was closed before it could start"));
-      }
+        // If some other error means we should close
+        if (serverClosing) {
+          return ready(new Error("Server was closed before it could start"));
+        }
 
-      serverStarted = true;
-      const addr = server.address();
-      logger.info(
-        `Started at ${opts.host || addr.host || "0.0.0.0"}:${addr.port}`
-      );
-      ready(err, app, server);
-    });
+        serverStarted = true;
+        const addr = server.address();
+        logger.info(
+          `Started at ${opts.host || addr.host || "0.0.0.0"}:${addr.port}`
+        );
+        ready(err, app, server);
+      }
+    );
   });
 };
