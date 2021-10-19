@@ -16,7 +16,10 @@ module.exports = {
       database: distribuidora.db_database,
       port: distribuidora.db_puerto,
     });
-
+    if (!connection) {
+      res.send({ error: "Error conectando con base de datos." });
+      return;
+    }
     connection.connect();
 
     connection.query(
@@ -46,7 +49,10 @@ module.exports = {
       database: distribuidora.db_database,
       port: distribuidora.db_puerto,
     });
-
+    if (!connection) {
+      res.send({ error: "Error conectando con base de datos." });
+      return;
+    }
     connection.connect();
 
     connection.query(
@@ -76,7 +82,10 @@ module.exports = {
       database: distribuidora.db_database,
       port: distribuidora.db_puerto,
     });
-
+    if (!connection) {
+      res.send({ error: "Error conectando con base de datos." });
+      return;
+    }
     connection.connect();
 
     connection.query(
@@ -106,7 +115,10 @@ module.exports = {
       database: distribuidora.db_database,
       port: distribuidora.db_puerto,
     });
-
+    if (!connection) {
+      res.send({ error: "Error conectando con base de datos." });
+      return;
+    }
     connection.connect();
 
     connection.query(
@@ -137,8 +149,11 @@ module.exports = {
       port: distribuidora.db_puerto,
     });
 
+    if (!connection) {
+      res.send({ error: "Error conectando con base de datos." });
+      return;
+    }
     connection.connect();
-
     connection.query(
       "SELECT * FROM tbl_pedidos_moviles_para_facturar",
       function (error, results, fields) {
@@ -167,8 +182,11 @@ module.exports = {
       port: distribuidora.db_puerto,
     });
 
+    if (!connection) {
+      res.send({ error: "Error conectando con base de datos." });
+      return;
+    }
     connection.connect();
-
     connection.query(
       "SELECT * FROM tbl_pedidos_moviles_para_facturar_contenido",
       function (error, results, fields) {
@@ -198,7 +216,10 @@ module.exports = {
     });
 
     connection.connect();
-
+    if (!connection) {
+      res.send({ error: "Error conectando con base de datos." });
+      return;
+    }
     connection.query(
       "SELECT * FROM tbl_clientes_nuevos",
       function (error, results, fields) {
@@ -226,7 +247,10 @@ module.exports = {
       database: distribuidora.db_database,
       port: distribuidora.db_puerto,
     });
-
+    if (!connection) {
+      res.send({ error: "Error conectando con base de datos." });
+      return;
+    }
     connection.connect();
 
     connection.query(
@@ -256,7 +280,10 @@ module.exports = {
       database: distribuidora.db_database,
       port: distribuidora.db_puerto,
     });
-
+    if (!connection) {
+      res.send({ error: "Error conectando con base de datos." });
+      return;
+    }
     connection.connect();
 
     connection.query(
@@ -286,7 +313,10 @@ module.exports = {
       database: distribuidora.db_database,
       port: distribuidora.db_puerto,
     });
-
+    if (!connection) {
+      res.send({ error: "Error conectando con base de datos." });
+      return;
+    }
     connection.connect();
 
     connection.query(
