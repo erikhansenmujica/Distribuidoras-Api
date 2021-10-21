@@ -4,15 +4,16 @@ const httpErrors = require("http-errors");
 const pino = require("pino");
 const pinoHttp = require("pino-http");
 var cors = require("cors");
+const fs=require("fs")
 const db = require("./generalDb");
 var bodyParser = require("body-parser");
 var https = require('https');
-var privateKey  = fs.readFileSync('private_key.key', 'utf8');
-var certificate = fs.readFileSync('CSR.csr', 'utf8');
+var key = fs.readFileSync("./selfsigned.key");
+var cert = fs.readFileSync("./selfsigned.crt");
 
 module.exports = function main(options, cb) {
   // Set default options
-  var credentials = {key: privateKey, cert: certificate};
+  var credentials = {key, cert};
   const ready = cb || function () {};
   const opts = Object.assign(
     {
@@ -90,7 +91,7 @@ module.exports = function main(options, cb) {
 
   // Start server
   db.sync({ force: false }).then(() => {
-    const server = httpsServer.listen(
+    const server = app.listen(
       process.env.PORT || 8000,
       "0.0.0.0",
       function (err) {
