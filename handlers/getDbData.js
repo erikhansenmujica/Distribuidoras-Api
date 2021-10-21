@@ -1,6 +1,7 @@
 "use strict";
 const { Distribuidoras } = require("../generalDb/models");
 var mysql = require("mysql");
+const util = require('util');
 
 module.exports = {
   companyRoutes: async function (req, res) {
