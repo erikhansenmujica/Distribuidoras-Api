@@ -57,7 +57,7 @@ module.exports = function main(options, cb) {
   // Common middleware
   // app.use(/* ... */)
   app.use(pinoHttp({ logger }));
-  app.use(cors());
+  app.use(cors({origin: true, credentials: true}));
   app.use(bodyParser.json());
 
   // create application/x-www-form-urlencoded parser
