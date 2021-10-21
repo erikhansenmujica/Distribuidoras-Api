@@ -7,8 +7,8 @@ module.exports = {
   companyRoutes: async function (req, res) {
     const distribuidora = await Distribuidoras.findByPk(req.params.id);
     if (!distribuidora) {
-      res.send({ error: "Error encontrando la distribuidora." });
-      return;
+        res.send({error:"Error encontrando la distribuidora."})
+        return
     }
     var connection = mysql.createConnection({
       host: distribuidora.db_host,
@@ -21,24 +21,27 @@ module.exports = {
       res.send({ error: "Error conectando con base de datos." });
       return;
     }
-    const conn = connection.connect();
-    const query = util.promisify(conn.query).bind(conn);
-    let results;
-    try {
-      results = await query("SELECT * FROM vista_rutas");
-    } catch (error) {
-      console.log(error);
-      res.send({ error: "Error en el servidor." });
-    }
-    res.send(results);
+    connection.connect();
+
+    connection.query(
+      "SELECT * FROM vista_rutas",
+      function (error, results, fields) {
+        if (error) {
+          console.log(error);
+          res.send({ error: "Error en el servidor." });
+          return;
+        }
+        res.send(results);
+      }
+    );
 
     connection.end();
   },
   companyProducts: async function (req, res) {
     const distribuidora = await Distribuidoras.findByPk(req.params.id);
     if (!distribuidora) {
-      res.send({ error: "Error encontrando la distribuidora." });
-      return;
+        res.send({error:"Error encontrando la distribuidora."})
+        return
     }
     var connection = mysql.createConnection({
       host: distribuidora.db_host,
@@ -70,8 +73,8 @@ module.exports = {
   companyClients: async function (req, res) {
     const distribuidora = await Distribuidoras.findByPk(req.params.id);
     if (!distribuidora) {
-      res.send({ error: "Error encontrando la distribuidora." });
-      return;
+        res.send({error:"Error encontrando la distribuidora."})
+        return
     }
     var connection = mysql.createConnection({
       host: distribuidora.db_host,
@@ -103,8 +106,8 @@ module.exports = {
   companyAccountMovements: async function (req, res) {
     const distribuidora = await Distribuidoras.findByPk(req.params.id);
     if (!distribuidora) {
-      res.send({ error: "Error encontrando la distribuidora." });
-      return;
+        res.send({error:"Error encontrando la distribuidora."})
+        return
     }
     var connection = mysql.createConnection({
       host: distribuidora.db_host,
@@ -136,8 +139,8 @@ module.exports = {
   companyOrders: async function (req, res) {
     const distribuidora = await Distribuidoras.findByPk(req.params.id);
     if (!distribuidora) {
-      res.send({ error: "Error encontrando la distribuidora." });
-      return;
+        res.send({error:"Error encontrando la distribuidora."})
+        return
     }
     var connection = mysql.createConnection({
       host: distribuidora.db_host,
@@ -169,8 +172,8 @@ module.exports = {
   companyOrdersContent: async function (req, res) {
     const distribuidora = await Distribuidoras.findByPk(req.params.id);
     if (!distribuidora) {
-      res.send({ error: "Error encontrando la distribuidora." });
-      return;
+        res.send({error:"Error encontrando la distribuidora."})
+        return
     }
     var connection = mysql.createConnection({
       host: distribuidora.db_host,
@@ -202,8 +205,8 @@ module.exports = {
   companyNewClients: async function (req, res) {
     const distribuidora = await Distribuidoras.findByPk(req.params.id);
     if (!distribuidora) {
-      res.send({ error: "Error encontrando la distribuidora." });
-      return;
+        res.send({error:"Error encontrando la distribuidora."})
+        return
     }
     var connection = mysql.createConnection({
       host: distribuidora.db_host,
@@ -235,8 +238,8 @@ module.exports = {
   companyCobranza: async function (req, res) {
     const distribuidora = await Distribuidoras.findByPk(req.params.id);
     if (!distribuidora) {
-      res.send({ error: "Error encontrando la distribuidora." });
-      return;
+        res.send({error:"Error encontrando la distribuidora."})
+        return
     }
     var connection = mysql.createConnection({
       host: distribuidora.db_host,
@@ -268,8 +271,8 @@ module.exports = {
   companyHistoricOrders: async function (req, res) {
     const distribuidora = await Distribuidoras.findByPk(req.params.id);
     if (!distribuidora) {
-      res.send({ error: "Error encontrando la distribuidora." });
-      return;
+        res.send({error:"Error encontrando la distribuidora."})
+        return
     }
     var connection = mysql.createConnection({
       host: distribuidora.db_host,
@@ -301,8 +304,8 @@ module.exports = {
   companyHistoricOrdersContent: async function (req, res) {
     const distribuidora = await Distribuidoras.findByPk(req.params.id);
     if (!distribuidora) {
-      res.send({ error: "Error encontrando la distribuidora." });
-      return;
+        res.send({error:"Error encontrando la distribuidora."})
+        return
     }
     var connection = mysql.createConnection({
       host: distribuidora.db_host,
@@ -317,18 +320,26 @@ module.exports = {
     }
     connection.connect();
 
-    connection.query(
-      "SELECT * FROM vista_historico_tbl_pedidos_moviles_contenido",
-      function (error, results, fields) {
-        if (error) {
-          console.log(error);
-          res.send({ error: "Error en el servidor." });
-          return;
-        }
-        res.send(results);
-      }
-    );
-
+    // connection.query(
+    //   "SELECT * FROM vista_historico_tbl_pedidos_moviles_contenido",
+    //   function (error, results, fields) {
+    //     if (error) {
+    //       console.log(error);
+    //       res.send({ error: "Error en el servidor." });
+    //       return;
+    //     }
+    //     res.send(results);
+    //   }
+    // );
+    const query = util.promisify(connection.query).bind(connection);
+    let results;
+    try {
+      results = await query("SELECT * FROM vista_historico_tbl_pedidos_moviles_contenido");
+    } catch (error) {
+      console.log(error);
+      res.send({ error: "Error en el servidor." });
+    }
+    res.send(results);
     connection.end();
   },
 };
