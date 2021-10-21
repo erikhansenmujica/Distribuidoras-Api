@@ -91,7 +91,7 @@ module.exports = function main(options, cb) {
 
   // Start server
   db.sync({ force: false }).then(() => {
-    const server = app.listen(
+    const server = httpsServer.listen(
       process.env.PORT || 8000,
       "0.0.0.0",
       function (err) {
