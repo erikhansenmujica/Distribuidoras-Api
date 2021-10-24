@@ -24,7 +24,7 @@ module.exports = {
     connection.connect();
 
     connection.query(
-      "SELECT * FROM vista_rutas",
+      "SELECT * FROM vista_rutas LIMIT "+ req.params.from+", "+req.params.to,
       function (error, results, fields) {
         if (error) {
           console.log(error);
@@ -57,7 +57,7 @@ module.exports = {
     connection.connect();
 
     connection.query(
-      "SELECT * FROM vista_productos",
+      "SELECT * FROM vista_productos LIMIT "+ req.params.from+", "+req.params.to,
       function (error, results, fields) {
         if (error) {
           console.log(error);
@@ -90,7 +90,7 @@ module.exports = {
     connection.connect();
 
     connection.query(
-      "SELECT * FROM vista_clientes",
+      "SELECT * FROM vista_clientes LIMIT "+ req.params.from+", "+req.params.to,
       function (error, results, fields) {
         if (error) {
           console.log(error);
@@ -123,7 +123,7 @@ module.exports = {
     connection.connect();
 
     connection.query(
-      "SELECT * FROM vista_movimientos_cuenta_corriente",
+      "SELECT * FROM vista_movimientos_cuenta_corriente LIMIT "+ req.params.from+", "+req.params.to,
       function (error, results, fields) {
         if (error) {
           console.log(error);
@@ -156,7 +156,7 @@ module.exports = {
     }
     connection.connect();
     connection.query(
-      "SELECT * FROM tbl_pedidos_moviles_para_facturar",
+      "SELECT * FROM tbl_pedidos_moviles_para_facturar LIMIT "+ req.params.from+", "+req.params.to,
       function (error, results, fields) {
         if (error) {
           console.log(error);
@@ -189,7 +189,7 @@ module.exports = {
     }
     connection.connect();
     connection.query(
-      "SELECT * FROM tbl_pedidos_moviles_para_facturar_contenido",
+      "SELECT * FROM tbl_pedidos_moviles_para_facturar_contenido LIMIT "+ req.params.from+", "+req.params.to,
       function (error, results, fields) {
         if (error) {
           console.log(error);
@@ -222,7 +222,7 @@ module.exports = {
       return;
     }
     connection.query(
-      "SELECT * FROM tbl_clientes_nuevos",
+      "SELECT * FROM tbl_clientes_nuevos LIMIT "+ req.params.from+", "+req.params.to,
       function (error, results, fields) {
         if (error) {
           console.log(error);
@@ -255,7 +255,7 @@ module.exports = {
     connection.connect();
 
     connection.query(
-      "SELECT * FROM tbl_cobranza",
+      "SELECT * FROM tbl_cobranza LIMIT "+ req.params.from+", "+req.params.to,
       function (error, results, fields) {
         if (error) {
           console.log(error);
@@ -288,7 +288,7 @@ module.exports = {
     connection.connect();
 
     connection.query(
-      "SELECT * FROM vista_historico_tbl_pedidos_moviles",
+      "SELECT * FROM vista_historico_tbl_pedidos_moviles LIMIT "+ req.params.from+", "+req.params.to,
       function (error, results, fields) {
         if (error) {
           console.log(error);
@@ -320,26 +320,18 @@ module.exports = {
     }
     connection.connect();
 
-    // connection.query(
-    //   "SELECT * FROM vista_historico_tbl_pedidos_moviles_contenido",
-    //   function (error, results, fields) {
-    //     if (error) {
-    //       console.log(error);
-    //       res.send({ error: "Error en el servidor." });
-    //       return;
-    //     }
-    //     res.send(results);
-    //   }
-    // );
-    const query = util.promisify(connection.query).bind(connection);
-    let results;
-    try {
-      results = await query("SELECT * FROM vista_historico_tbl_pedidos_moviles_contenido");
-    } catch (error) {
-      console.log(error);
-      res.send({ error: "Error en el servidor." });
-    }
-    res.send(results);
+    connection.query(
+      "SELECT * FROM vista_historico_tbl_pedidos_moviles_contenido LIMIT "+ req.params.from+", "+req.params.to,
+      function (error, results, fields) {
+        if (error) {
+          console.log(error);
+          res.send({ error: "Error en el servidor." });
+          return;
+        }
+        res.send(results);
+      }
+    );
+
     connection.end();
   },
 };

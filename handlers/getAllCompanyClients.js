@@ -19,7 +19,7 @@ module.exports = async function (req, res) {
   connection.connect();
 
   connection.query(
-    "SELECT * FROM vista_clientes",
+    "SELECT * FROM vista_clientes LIMIT "+ req.params.from+", "+req.params.to,
     function (error, results, fields) {
       if (error) {
         console.log(error);
