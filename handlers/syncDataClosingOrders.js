@@ -122,7 +122,7 @@ module.exports = async function (req, res) {
                     } else c += 1;
                   });
                   doBigQuery(
-                    Object.keys(req.body)[0],
+                    "tbl_pedidos_moviles_para_facturar_contenido",
                     req.body.contenido,
                     0,
                     9,
