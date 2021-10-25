@@ -22,7 +22,7 @@ module.exports = async function (req, res) {
     res.send({ error: "Error conectando con base de datos." });
     return;
   }
-  const table = req.body.table ? req.body.table : Object.keys(req.body)[0];
+  const table = Object.keys(req.body)[0];
   let pk = "";
   if (table === "tbl_clientes_nuevos") {
     pk = "codigo";
@@ -35,101 +35,110 @@ module.exports = async function (req, res) {
   }
   if (table === "tbl_pedidos_moviles_para_facturar") {
     pk = "id_contenido_pedido";
-    connection.query(
-      "SELECT * FROM " +
-        "tbl_pedidos_moviles_para_facturar_contenido" +
-        " ORDER BY cast(" +
-        pk +
-        " as unsigned) desc LIMIT 1",
-      function (e, r) {
-        if (e) {
-          console.log(e, 1);
-          res.send({ error: "Conexión a base de datos fallida." });
-        } else {
-          let c = r[0]
-            ? pk === "codigo"
-              ? r[0].codigo + 1
-              : (parseFloat(r[0][pk]) + 1).toString()
-            : pk === "codigo"
-            ? 1
-            : "1";
-          connection.query(
-            "SELECT * FROM " +
-              "tbl_pedidos_moviles_para_facturar" +
-              " ORDER BY cast(" +
-              "id" +
-              " as unsigned) desc LIMIT 1",
-            function (er, re) {
-              let id = re[0] ? (parseFloat(re[0].id) + 1).toString() : "1";
-              connection.query(
-                "INSERT INTO tbl_pedidos_moviles_para_facturar (id,	fecha,	hora,	cliente,	usuario,	ruta,	tilde,	fecha_entrega,	hora_inicio,	id_reparto) VALUES (" +
-                  "'" +
-                  id +
-                  "'" +
-                  ", " +
-                  "'" +
-                  req.body.fecha +
-                  "'" +
-                  ", " +
-                  "'" +
-                  req.body.hora +
-                  "'" +
-                  ", " +
-                  "'" +
-                  req.body.cliente +
-                  "'" +
-                  ", " +
-                  "'" +
-                  req.body.usuario +
-                  "'" +
-                  ", " +
-                  "'" +
-                  req.body.ruta +
-                  "'" +
-                  ", " +
-                  "'" +
-                  req.body.tilde +
-                  "'" +
-                  ", " +
-                  "'" +
-                  req.body.fecha_entrega +
-                  "'" +
-                  ", " +
-                  "'" +
-                  req.body.hora_inicio +
-                  "'" +
-                  ", " +
-                  "'" +
-                  "0" +
-                  "'" +
-                  ")",
-                function (error, r) {
-                  if (error) {
-                    res.send({ error: "Error en el servidor" });
-                    return;
-                  }
-                  req.body.contenido.forEach((thing) => {
-                    thing[pk] = c;
-                    thing.id_pedido_movil = id;
-                    if (typeof c === "string") {
-                      c = (parseFloat(c) + 1).toString();
-                    } else c += 1;
-                  });
-                  doBigQuery(
-                    "tbl_pedidos_moviles_para_facturar_contenido",
-                    req.body.contenido,
-                    0,
-                    9,
-                    res,
-                    connection
-                  );
-                }
-              );
-            }
-          );
-        }
+    function recursiveOrders(i = 0) {
+      if (i === req.body[table].length) {
+        res.send("terminado");
+        return;
       }
-    );
+      const body=req.body[table][i]
+      connection.query(
+        "SELECT * FROM " +
+          "tbl_pedidos_moviles_para_facturar_contenido" +
+          " ORDER BY cast(" +
+          pk +
+          " as unsigned) desc LIMIT 1",
+        function (e, r) {
+          if (e) {
+            console.log(e, 1);
+            res.send({ error: "Conexión a base de datos fallida." });
+          } else {
+            let c = r[0]
+              ? pk === "codigo"
+                ? r[0].codigo + 1
+                : (parseFloat(r[0][pk]) + 1).toString()
+              : pk === "codigo"
+              ? 1
+              : "1";
+            connection.query(
+              "SELECT * FROM " +
+                "tbl_pedidos_moviles_para_facturar" +
+                " ORDER BY cast(" +
+                "id" +
+                " as unsigned) desc LIMIT 1",
+              function (er, re) {
+                let id = re[0] ? (parseFloat(re[0].id) + 1).toString() : "1";
+                connection.query(
+                  "INSERT INTO tbl_pedidos_moviles_para_facturar (id,	fecha,	hora,	cliente,	usuario,	ruta,	tilde,	fecha_entrega,	hora_inicio,	id_reparto) VALUES (" +
+                    "'" +
+                    id +
+                    "'" +
+                    ", " +
+                    "'" +
+                    body.fecha +
+                    "'" +
+                    ", " +
+                    "'" +
+                    body.hora +
+                    "'" +
+                    ", " +
+                    "'" +
+                    body.cliente +
+                    "'" +
+                    ", " +
+                    "'" +
+                    body.usuario +
+                    "'" +
+                    ", " +
+                    "'" +
+                    body.ruta +
+                    "'" +
+                    ", " +
+                    "'" +
+                    body.tilde +
+                    "'" +
+                    ", " +
+                    "'" +
+                    body.fecha_entrega +
+                    "'" +
+                    ", " +
+                    "'" +
+                    body.hora_inicio +
+                    "'" +
+                    ", " +
+                    "'" +
+                    "0" +
+                    "'" +
+                    ")",
+                  function (error, r) {
+                    if (error) {
+                      res.send({ error: "Error en el servidor" });
+                      return;
+                    }
+                    body.contenido.forEach((thing) => {
+                      thing[pk] = c;
+                      thing.id_pedido_movil = id;
+                      if (typeof c === "string") {
+                        c = (parseFloat(c) + 1).toString();
+                      } else c += 1;
+                    });
+                    doBigQuery(
+                      "tbl_pedidos_moviles_para_facturar_contenido",
+                      body.contenido,
+                      0,
+                      9,
+                      recursiveOrders,
+                      connection,
+                      i
+                    );
+                  }
+                );
+              }
+            );
+          }
+        }
+      );
+    }
+    recursiveOrders();
   } else if (table !== "tbl_pedidos_moviles_para_facturar_contenido") {
     connection.query(
       "SELECT * FROM " +
@@ -180,14 +189,26 @@ module.exports = async function (req, res) {
     );
   }
 };
-function doBigQuery(tableName, data, start = 0, limit = 9, res, connection) {
+function doBigQuery(
+  tableName,
+  data,
+  start = 0,
+  limit = 9,
+  res,
+  connection,
+  index
+) {
   let parameters = [];
   let bigqery = "";
   let minData = data.slice(start, limit);
   let values = "(";
   let i = 0;
   if (!minData[0] || start > data.length) {
-    res.send("terminado");
+    if (res.send) {
+      res.send("terminado");
+    } else {
+      res(index + 1);
+    }
     return;
   }
   for (const key in minData[0]) {
