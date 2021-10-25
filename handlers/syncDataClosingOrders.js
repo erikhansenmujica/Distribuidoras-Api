@@ -60,13 +60,7 @@ module.exports = async function (req, res) {
               "id" +
               " as unsigned) desc LIMIT 1",
             function (er, re) {
-              let id = re[0]
-                ? pk === "codigo"
-                  ? re[0].codigo + 1
-                  : (parseFloat(re[0].id) + 1).toString()
-                : pk === "codigo"
-                ? 1
-                : "1";
+              let id = re[0] ? (parseFloat(re[0].id) + 1).toString() : "1";
               connection.query(
                 "INSERT INTO tbl_pedidos_moviles_para_facturar (id,	fecha,	hora,	cliente,	usuario,	ruta,	tilde,	fecha_entrega,	hora_inicio,	id_reparto) VALUES (" +
                   "'" +
