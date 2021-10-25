@@ -198,7 +198,7 @@ function doBigQuery(
   limit = 9,
   res,
   connection,
-  index
+  p
 ) {
   let parameters = [];
   let bigqery = "";
@@ -209,7 +209,8 @@ function doBigQuery(
     if (res.send) {
       res.send("terminado");
     } else {
-      res(index + 1);
+      console.log(p,"@@@@@@@@")
+      res(p + 1);
     }
     return;
   }
