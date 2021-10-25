@@ -22,7 +22,7 @@ module.exports = async function (req, res) {
     res.send({ error: "Error conectando con base de datos." });
     return;
   }
-  const table = Object.keys(req.body)[0];
+  const table = req.body.table ? req.body.table : Object.keys(req.body)[0];
   let pk = "";
   if (table === "tbl_clientes_nuevos") {
     pk = "codigo";
@@ -33,11 +33,11 @@ module.exports = async function (req, res) {
   if (table === "tbl_pedidos_moviles_para_facturar") {
     pk = "id";
   }
-  if (table === "tbl_pedidos_moviles_para_facturar_contenido") {
+  if (table === "tbl_pedidos_moviles_para_facturar") {
     pk = "id_contenido_pedido";
     connection.query(
       "SELECT * FROM " +
-        table +
+        "tbl_pedidos_moviles_para_facturar_contenido" +
         " ORDER BY cast(" +
         pk +
         " as unsigned) desc LIMIT 1",
@@ -61,33 +61,82 @@ module.exports = async function (req, res) {
               " as unsigned) desc LIMIT 1",
             function (er, re) {
               let id = re[0]
-              ? pk === "codigo"
-                ? re[0].codigo + 1
-                : (parseFloat(re[0].id) + 1).toString()
-              : pk === "codigo"
-              ? 1
-              : "1";
-              req.body[Object.keys(req.body)[0]].forEach((thing) => {
-                thing[pk] = c;
-                thing.id_pedido_movil=id
-                if (typeof c === "string") {
-                  c = (parseFloat(c) + 1).toString();
-                } else c += 1;
-              });
-              doBigQuery(
-                Object.keys(req.body)[0],
-                req.body[Object.keys(req.body)[0]],
-                0,
-                9,
-                res,
-                connection
+                ? pk === "codigo"
+                  ? re[0].codigo + 1
+                  : (parseFloat(re[0].id) + 1).toString()
+                : pk === "codigo"
+                ? 1
+                : "1";
+              connection.query(
+                "INSERT INTO tbl_pedidos_moviles_para_facturar (id,	fecha,	hora,	cliente,	usuario,	ruta,	tilde,	fecha_entrega,	hora_inicio,	id_reparto) VALUES (" +
+                  "'" +
+                  id +
+                  "'" +
+                  ", " +
+                  "'" +
+                  req.body.order.fecha +
+                  "'" +
+                  ", " +
+                  "'" +
+                  req.body.order.hora +
+                  "'" +
+                  ", " +
+                  "'" +
+                  req.body.order.cliente +
+                  "'" +
+                  ", " +
+                  "'" +
+                  req.body.order.usuario +
+                  "'" +
+                  ", " +
+                  "'" +
+                  req.body.order.ruta +
+                  "'" +
+                  ", " +
+                  "'" +
+                  req.body.order.tilde +
+                  "'" +
+                  ", " +
+                  "'" +
+                  req.body.order.fecha_entrega +
+                  "'" +
+                  ", " +
+                  "'" +
+                  req.body.order.hora_inicio +
+                  "'" +
+                  ", " +
+                  "'" +
+                  "0" +
+                  "'" +
+                  ")",
+                function (error, r) {
+                  if (error) {
+                    res.send({ error: "Error en el servidor" });
+                    return;
+                  }
+                  req.body.contenido.forEach((thing) => {
+                    thing[pk] = c;
+                    thing.id_pedido_movil = id;
+                    if (typeof c === "string") {
+                      c = (parseFloat(c) + 1).toString();
+                    } else c += 1;
+                  });
+                  doBigQuery(
+                    Object.keys(req.body)[0],
+                    req.body.contenido,
+                    0,
+                    9,
+                    res,
+                    connection
+                  );
+                }
               );
             }
           );
         }
       }
     );
-  } else {
+  } else if (table !== "tbl_pedidos_moviles_para_facturar_contenido") {
     connection.query(
       "SELECT * FROM " +
         table +
@@ -99,28 +148,27 @@ module.exports = async function (req, res) {
           console.log(e, 1);
           res.send({ error: "Conexión a base de datos fallida." });
         } else {
-          let c
-          if(table==="tbl_cobranza"){
-            c=r[0]?r[0].id:"1"
-            if (c!=="1") {
-              c=(parseFloat(c.split("-")[0])+1).toString()
+          let c;
+          if (table === "tbl_cobranza") {
+            c = r[0] ? r[0].id : "1";
+            if (c !== "1") {
+              c = (parseFloat(c.split("-")[0]) + 1).toString();
             }
-          }
-          else{
-           c = r[0]
-            ? pk === "codigo"
-              ? r[0].codigo + 1
-              : (parseFloat(r[0][pk]) + 1).toString()
-            : pk === "codigo"
-            ? 1
-            : "1";
+          } else {
+            c = r[0]
+              ? pk === "codigo"
+                ? r[0].codigo + 1
+                : (parseFloat(r[0][pk]) + 1).toString()
+              : pk === "codigo"
+              ? 1
+              : "1";
           }
           req.body[Object.keys(req.body)[0]].forEach((thing) => {
             if (typeof c === "string") {
               c = (parseFloat(c) + 1).toString();
-              console.log(table)
-              if(table==="tbl_cobranza"){
-                c=c+"-"+thing.ruta
+              console.log(table);
+              if (table === "tbl_cobranza") {
+                c = c + "-" + thing.ruta;
               }
             } else c += 1;
             thing[pk] = c;
