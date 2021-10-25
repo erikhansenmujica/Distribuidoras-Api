@@ -35,13 +35,14 @@ module.exports = async function (req, res) {
   }
   if (table === "tbl_pedidos_moviles_para_facturar") {
     pk = "id_contenido_pedido";
-    console.log(req.body)
     function recursiveOrders(i = 0) {
       if (i === req.body[table].length) {
         res.send("terminado");
         return;
       }
-      const body=req.body[table][i]
+      console.log(req.body, table, i);
+
+      const body = req.body[table][i];
       connection.query(
         "SELECT * FROM " +
           "tbl_pedidos_moviles_para_facturar_contenido" +
