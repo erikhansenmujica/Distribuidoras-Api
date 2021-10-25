@@ -116,7 +116,6 @@ module.exports = async function (req, res) {
             : "1";
           }
           req.body[Object.keys(req.body)[0]].forEach((thing) => {
-            thing[pk] = c;
             if (typeof c === "string") {
               c = (parseFloat(c) + 1).toString();
               console.log(table)
@@ -124,6 +123,7 @@ module.exports = async function (req, res) {
                 c=c+"-"+thing.ruta
               }
             } else c += 1;
+            thing[pk] = c;
           });
           doBigQuery(
             Object.keys(req.body)[0],
