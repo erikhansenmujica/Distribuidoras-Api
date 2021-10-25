@@ -111,6 +111,9 @@ module.exports = async function (req, res) {
             thing[pk] = c;
             if (typeof c === "string") {
               c = (parseFloat(c) + 1).toString();
+              if(table==="tbl_cobranza"){
+                c+=("-"+thing.ruta)
+              }
             } else c += 1;
           });
           doBigQuery(
