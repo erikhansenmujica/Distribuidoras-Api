@@ -211,7 +211,7 @@ function doBigQuery(
       res.send("terminado");
     } else {
       console.log(p,"@@@@@@@@")
-      res(p + 1);
+      if(p)res(p + 1);
     }
     return;
   }
