@@ -40,10 +40,7 @@ module.exports = async function (req, res) {
         res.send("terminado");
         return;
       }
-      console.log(req.body, table, i);
-
       const body = req.body[table][i];
-      const index=i
       connection.query(
         "SELECT * FROM " +
           "tbl_pedidos_moviles_para_facturar_contenido" +
@@ -131,7 +128,7 @@ module.exports = async function (req, res) {
                       9,
                       recursiveOrders,
                       connection,
-                      index
+                      i
                     );
                   }
                 );
@@ -210,8 +207,7 @@ function doBigQuery(
     if (res.send) {
       res.send("terminado");
     } else {
-      console.log(p,"@@@@@@@@")
-      if(p)res(p + 1);
+      res(p + 1);
     }
     return;
   }
@@ -261,7 +257,8 @@ function doBigQuery(
             (start = limit),
             (limit += 9),
             res,
-            connection
+            connection,
+            p
           );
         if (err) {
           console.log(err);
