@@ -43,6 +43,7 @@ module.exports = async function (req, res) {
       console.log(req.body, table, i);
 
       const body = req.body[table][i];
+      const index=i
       connection.query(
         "SELECT * FROM " +
           "tbl_pedidos_moviles_para_facturar_contenido" +
@@ -130,7 +131,7 @@ module.exports = async function (req, res) {
                       9,
                       recursiveOrders,
                       connection,
-                      i
+                      index
                     );
                   }
                 );
