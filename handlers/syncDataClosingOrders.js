@@ -35,41 +35,96 @@ module.exports = async function (req, res) {
   }
   if (table === "tbl_pedidos_moviles_para_facturar_contenido") {
     pk = "id_contenido_pedido";
-  }
-
-  connection.query(
-    "SELECT * FROM " + table + " ORDER BY " + pk + " desc LIMIT 1",
-    function (e, r) {
-      if (e) {
-        console.log(e, 1);
-        res.send({ error: "Conexión a base de datos fallida." });
-      } else {
-      
-        let c = r[0]
-          ? pk === "codigo"
-            ? r[0].codigo + 1
-            : (parseFloat(r[0][pk]) + 1).toString()
-          : pk === "codigo"
-          ? 1
-          : "1";
-         
-        req.body[Object.keys(req.body)[0]].forEach((thing) => {
-          thing[pk] = c;
-          if (typeof c === "string") {
-            c = (parseFloat(c) + 1).toString();
-          } else c += 1;
-        });
-        doBigQuery(
-          Object.keys(req.body)[0],
-          req.body[Object.keys(req.body)[0]],
-          0,
-          9,
-          res,
-          connection
-        );
+    connection.query(
+      "SELECT * FROM " +
+        table +
+        " ORDER BY cast(" +
+        pk +
+        " as unsigned) desc LIMIT 1",
+      function (e, r) {
+        if (e) {
+          console.log(e, 1);
+          res.send({ error: "Conexión a base de datos fallida." });
+        } else {
+          let c = r[0]
+            ? pk === "codigo"
+              ? r[0].codigo + 1
+              : (parseFloat(r[0][pk]) + 1).toString()
+            : pk === "codigo"
+            ? 1
+            : "1";
+          connection.query(
+            "SELECT * FROM " +
+              "tbl_pedidos_moviles_para_facturar" +
+              " ORDER BY cast(" +
+              "id" +
+              " as unsigned) desc LIMIT 1",
+            function (er, re) {
+              let id = re[0]
+              ? pk === "codigo"
+                ? re[0].codigo + 1
+                : (parseFloat(re[0].id) + 1).toString()
+              : pk === "codigo"
+              ? 1
+              : "1";
+              req.body[Object.keys(req.body)[0]].forEach((thing) => {
+                thing[pk] = c;
+                thing.id_pedido_movil=id
+                if (typeof c === "string") {
+                  c = (parseFloat(c) + 1).toString();
+                } else c += 1;
+              });
+              doBigQuery(
+                Object.keys(req.body)[0],
+                req.body[Object.keys(req.body)[0]],
+                0,
+                9,
+                res,
+                connection
+              );
+            }
+          );
+        }
       }
-    }
-  );
+    );
+  } else {
+    connection.query(
+      "SELECT * FROM " +
+        table +
+        " ORDER BY cast(" +
+        pk +
+        " as unsigned) desc LIMIT 1",
+      function (e, r) {
+        if (e) {
+          console.log(e, 1);
+          res.send({ error: "Conexión a base de datos fallida." });
+        } else {
+          let c = r[0]
+            ? pk === "codigo"
+              ? r[0].codigo + 1
+              : (parseFloat(r[0][pk]) + 1).toString()
+            : pk === "codigo"
+            ? 1
+            : "1";
+
+          req.body[Object.keys(req.body)[0]].forEach((thing) => {
+            thing[pk] = c;
+            if (typeof c === "string") {
+              c = (parseFloat(c) + 1).toString();
+            } else c += 1;
+          });
+          doBigQuery(
+            Object.keys(req.body)[0],
+            req.body[Object.keys(req.body)[0]],
+            0,
+            9,
+            res,
+            connection
+          );
+        }
+      }
+    );
+  }
 };
 function doBigQuery(tableName, data, start = 0, limit = 9, res, connection) {
   let parameters = [];
@@ -78,7 +133,7 @@ function doBigQuery(tableName, data, start = 0, limit = 9, res, connection) {
   let values = "(";
   let i = 0;
   if (!minData[0] || start > data.length) {
-    res.send("terminado")
+    res.send("terminado");
     return;
   }
   for (const key in minData[0]) {
