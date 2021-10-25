@@ -99,20 +99,28 @@ module.exports = async function (req, res) {
           console.log(e, 1);
           res.send({ error: "Conexión a base de datos fallida." });
         } else {
-          let c = r[0]
+          let c
+          if(table==="tbl_cobranza"){
+            c=r[0]?r[0].id:"1"
+            if (c!=="1") {
+              c=(parseFloat(c.split("-")[0])+1).toString()
+            }
+          }
+          else{
+           c = r[0]
             ? pk === "codigo"
               ? r[0].codigo + 1
               : (parseFloat(r[0][pk]) + 1).toString()
             : pk === "codigo"
             ? 1
             : "1";
-
+          }
           req.body[Object.keys(req.body)[0]].forEach((thing) => {
             thing[pk] = c;
             if (typeof c === "string") {
               c = (parseFloat(c) + 1).toString();
               if(table==="tbl_cobranza"){
-                c+=("-"+thing.ruta)
+                c=c+"-"+thing.ruta
               }
             } else c += 1;
           });
