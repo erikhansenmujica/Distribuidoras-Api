@@ -74,35 +74,35 @@ module.exports = async function (req, res) {
                   "'" +
                   ", " +
                   "'" +
-                  req.body.order.fecha +
+                  req.body.fecha +
                   "'" +
                   ", " +
                   "'" +
-                  req.body.order.hora +
+                  req.body.hora +
                   "'" +
                   ", " +
                   "'" +
-                  req.body.order.cliente +
+                  req.body.cliente +
                   "'" +
                   ", " +
                   "'" +
-                  req.body.order.usuario +
+                  req.body.usuario +
                   "'" +
                   ", " +
                   "'" +
-                  req.body.order.ruta +
+                  req.body.ruta +
                   "'" +
                   ", " +
                   "'" +
-                  req.body.order.tilde +
+                  req.body.tilde +
                   "'" +
                   ", " +
                   "'" +
-                  req.body.order.fecha_entrega +
+                  req.body.fecha_entrega +
                   "'" +
                   ", " +
                   "'" +
-                  req.body.order.hora_inicio +
+                  req.body.hora_inicio +
                   "'" +
                   ", " +
                   "'" +
