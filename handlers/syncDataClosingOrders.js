@@ -35,6 +35,7 @@ module.exports = async function (req, res) {
   }
   if (table === "tbl_pedidos_moviles_para_facturar") {
     pk = "id_contenido_pedido";
+    console.log(req.body)
     function recursiveOrders(i = 0) {
       if (i === req.body[table].length) {
         res.send("terminado");
