@@ -52,13 +52,7 @@ module.exports = async function (req, res) {
             console.log(e, 1);
             res.send({ error: "Conexión a base de datos fallida." });
           } else {
-            let c = r[0]
-              ? pk === "codigo"
-                ? r[0].codigo + 1
-                : (parseFloat(r[0][pk]) + 1).toString()
-              : pk === "codigo"
-              ? 1
-              : "1";
+            let c = "1";
             connection.query(
               "SELECT * FROM " +
                 "tbl_pedidos_moviles_para_facturar" +
@@ -117,9 +111,7 @@ module.exports = async function (req, res) {
                     body.contenido.forEach((thing) => {
                       thing[pk] = c;
                       thing.id_pedido_movil = id;
-                      if (typeof c === "string") {
-                        c = (parseFloat(c) + 1).toString();
-                      } else c += 1;
+                      c = (parseFloat(c) + 1).toString();
                     });
                     doBigQuery(
                       "tbl_pedidos_moviles_para_facturar_contenido",
@@ -189,15 +181,7 @@ module.exports = async function (req, res) {
     );
   }
 };
-function doBigQuery(
-  tableName,
-  data,
-  start = 0,
-  limit = 9,
-  res,
-  connection,
-  p
-) {
+function doBigQuery(tableName, data, start = 0, limit = 9, res, connection, p) {
   let parameters = [];
   let bigqery = "";
   let minData = data.slice(start, limit);
