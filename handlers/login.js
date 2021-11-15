@@ -24,9 +24,21 @@ module.exports = async function (req, res, next) {
     return;
   }
 
-  if (!device[0] && usuario.name !== "Test") {
-    res.send({ error: "Este dispositivo no esta registrado con esta cuenta." });
-    return;
+  if (!device[0]) {
+    if (usuario.name === "Test") {
+      device[0] ===
+        {
+          ultimo_movimiento_cta_cte: null,
+          deviceId: "asd",
+          createdAt: "",
+          updatedAt: "",
+        };
+    } else {
+      res.send({
+        error: "Este dispositivo no esta registrado con esta cuenta.",
+      });
+      return;
+    }
   } else if (!req.body.password) {
     res.send({ error: "Por favor escriba la contraseña." });
     return;
