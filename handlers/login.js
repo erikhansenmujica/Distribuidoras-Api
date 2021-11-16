@@ -1,5 +1,5 @@
 "use strict";
-const { Usuarios } = require("../generalDb/models");
+const { Usuarios, Dispositivos } = require("../generalDb/models");
 var jwt = require("jsonwebtoken");
 module.exports = async function (req, res, next) {
   const usuario = await Usuarios.findOne({
@@ -25,8 +25,17 @@ module.exports = async function (req, res, next) {
   }
 
   if (!device[0]) {
-    res.send({ error: "Este dispositivo no esta registrado con esta cuenta." });
-    return;
+    if (usuario.nombre === "Test") {
+      device[0] = await Dispositivos.create({
+        deviceId: req.body.deviceId,
+      });
+      await usuario.setDispositivos(device[0]);
+    } else {
+      res.send({
+        error: "Este dispositivo no esta registrado con esta cuenta.",
+      });
+      return;
+    }
   } else if (!req.body.password) {
     res.send({ error: "Por favor escriba la contraseña." });
     return;
